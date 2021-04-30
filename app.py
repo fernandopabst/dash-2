@@ -35,6 +35,8 @@ from dash.dependencies import Output, Input
 
 app = dash.Dash(__name__)
 
+server = app.server
+
 app.layout=html.Div([
     html.H1("Graph Analysis with Charming Data"),
     dcc.Dropdown(id='genre-choice',

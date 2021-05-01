@@ -2,40 +2,15 @@ import dash
 import dash_auth
 import plotly.express as px
 import pandas as pd
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Output, Input
 
-# Data Exploration with Pandas (python)
-# -----------------------------------------------------------------
 VALID_USERNAME_PASSWORD_PAIRS = {
     'user': 'Password1!'
 }
 
-df = pd.read_csv("vgsales.csv") # data by GregorySmith from kaggle
-
-#print(df[:5])
-#print(df.iloc[:5, [2,3,5,10]])
-#print(df.Genre.nunique())
-#print(df.Genre.unique())
-#print(sorted(df.Year.unique()))
-
-# Data Visualization with Plotly (Python)
-# -----------------------------------------------------------------
-
-#fig_pie = px.pie(data_frame=df, names='Genre', values='Japan Sales')
-#fig_pie = px.pie(data_frame=df, names='Genre', values='North American Sales')
-#fig_pie.show()
-
-#fig_bar = px.bar(data_frame=df, x='Genre', y='Japan Sales')
-#fig_bar.show()
-
-fig_hist = px.histogram(data_frame=df, x='Year', y='Japan Sales')
-#fig_hist.show()
-
-# Interactive Graphs with Dash (Python, R, Julia)
-# -----------------------------------------------------------------
-
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Output, Input
+df = pd.read_csv("ethics.csv")
 
 app = dash.Dash(__name__)
 auth = dash_auth.BasicAuth(
@@ -46,25 +21,26 @@ auth = dash_auth.BasicAuth(
 server = app.server
 
 app.layout=html.Div([
-    html.H1("Graph Analysis with Charming Data"),
-    dcc.Dropdown(id='genre-choice',
-                 options=[{'label':x, 'value':x}
-                          for x in sorted(df.Genre.unique())],
-                 value='Action'
-                 ),
-    dcc.Graph(id='my-graph',
-              figure={}),
+    html.H1("CSSHS Ethics application analysis up to 1 May 2021"),
+    html.H2("Total count by Type"),
+    dcc.Graph(id='my-graph1',
+              figure=px.histogram(data_frame=df, x="Type",color="Type")),
+    html.H2("Status/Outcome by Sub-Panel"),
+    dcc.Graph(id='my-graph2',
+              figure=px.histogram(data_frame=df, x="Project Status",color="Health of Sport?")),
+    html.H2("Type by Sub-Panel"),
+    dcc.Graph(id='my-graph3',
+              figure=px.histogram(data_frame=df, x="Health of Sport?",color="Type")),
+    html.H2("Type by Supervisor"),
+    dcc.Graph(id='my-graph4',
+              figure=px.histogram(data_frame=df, x="Supervisor",color="Type")),
+    html.H2("Resubmissions by Sub-Panel"),
+    dcc.Graph(id='my-graph5',
+              figure=px.histogram(data_frame=df, x="Health of Sport?",color="Re Submission")),
+    html.H2("Type of Approval Sought"),
+    dcc.Graph(id='my-graph6',
+              figure=px.histogram(data_frame=df, x="Health of Sport?",color="Approval Requirement By")),
 ])
-@app.callback(
-    Output(component_id='my-graph', component_property='figure'),
-    Input(component_id='genre-choice', component_property='value')
-)
-def interactive_graphs(value_genre):
-    print(value_genre)
-    dff = df[df.Genre==value_genre]
-    fig = px.bar(data_frame=dff, x='Year', y='Japan Sales')
-    return fig
-
 
 if __name__=='__main__':
     app.run_server()

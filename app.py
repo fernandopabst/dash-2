@@ -1,9 +1,13 @@
 import dash
+import dash_auth
 import plotly.express as px
 import pandas as pd
 
 # Data Exploration with Pandas (python)
 # -----------------------------------------------------------------
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'user': 'Password1!'
+}
 
 df = pd.read_csv("vgsales.csv") # data by GregorySmith from kaggle
 
@@ -34,6 +38,10 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 
 app = dash.Dash(__name__)
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 
 server = app.server
 
